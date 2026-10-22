@@ -6,7 +6,8 @@
  */
 import { Picture, getImage } from 'astro:assets';
 import { getPhoto } from '../lib/photos';
-import { showPending } from '../config/flags';
+import { devHints } from '../config/flags';
+import { scenes, type SceneName } from './scenes';
 
 interface Props {
   file: string;
@@ -19,6 +20,7 @@ interface Props {
   /** Gera `data-full` com a versão grande (usada pelo visualizador). */
   zoomable?: boolean;
   tone?: 'light' | 'dark';
+  scene?: SceneName;
 }
 
 const {
@@ -31,6 +33,7 @@ const {
   class: className,
   zoomable = false,
   tone = 'light',
+  scene = 'mountains',
 } = Astro.props;
 
 const image = getPhoto(file);
@@ -56,13 +59,24 @@ const full = image && zoomable ? await getImage({ src: image, width: Math.min(im
   ) : (
     <div class:list={['photo-placeholder', `photo-placeholder--${tone}`, className]} role="img" aria-label={`${alt} (fotografia oficial em breve)`}>
       <svg class="photo-placeholder__art" viewBox="0 0 400 260" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
-        <circle cx="292" cy="78" r="26" fill="currentColor" opacity=".16" />
         <path d="M0 210 70 150l46 34 72-78 64 62 44-30 104 72v50H0Z" fill="currentColor" opacity=".1" />
         <path d="M0 236 92 186l58 28 86-54 74 46 90-30v84H0Z" fill="currentColor" opacity=".14" />
       </svg>
+      <svg
+        class="photo-placeholder__scene"
+        viewBox="0 0 120 120"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        focusable="false"
+        set:html={scenes[scene]}
+      />
       <span class="photo-placeholder__label">{label ?? alt}</span>
       <span class="photo-placeholder__hint">Fotografia oficial em breve</span>
-      {showPending && <code class="photo-placeholder__file">{file}</code>}
+      {devHints && <code class="photo-placeholder__file">{file}</code>}
     </div>
   )
 }
@@ -99,6 +113,19 @@ const full = image && zoomable ? await getImage({ src: image, width: Math.min(im
     inset: 0;
     width: 100%;
     height: 100%;
+  }
+
+  .photo-placeholder__scene {
+    position: relative;
+    width: clamp(56px, 22%, 112px);
+    height: auto;
+    margin-bottom: 0.35rem;
+    color: var(--earth);
+    opacity: 0.85;
+  }
+
+  .photo-placeholder--dark .photo-placeholder__scene {
+    color: var(--gold-light);
   }
 
   .photo-placeholder__label {

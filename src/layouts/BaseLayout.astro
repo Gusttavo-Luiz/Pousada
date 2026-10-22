@@ -96,13 +96,6 @@ const lodging = {
   </head>
   <body>
     <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
-    {
-      demoMode && (
-        <p class="demo-banner" role="note">
-          Demonstração · conteúdo em validação, formulário sem envio
-        </p>
-      )
-    }
     <Header solid={!home} />
     <main id="conteudo" tabindex="-1">
       <slot />
@@ -135,26 +128,4 @@ const lodging = {
     outline: none;
   }
 
-  .demo-banner {
-    position: fixed;
-    left: 1rem;
-    bottom: 1rem;
-    z-index: 45;
-    max-width: calc(100vw - 2rem);
-    margin: 0;
-    padding: 0.4rem 0.85rem;
-    border-radius: 999px;
-    background: var(--gold-light);
-    color: var(--forest-night);
-    font-size: 0.75rem;
-    font-weight: 600;
-    box-shadow: var(--shadow-soft);
-    pointer-events: none;
-  }
-
-  @media (max-width: 1080px) {
-    .demo-banner {
-      bottom: calc(5.25rem + env(safe-area-inset-bottom));
-    }
-  }
 </style>

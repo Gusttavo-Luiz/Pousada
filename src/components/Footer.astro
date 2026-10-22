@@ -4,6 +4,7 @@ import Logo from './Logo.astro';
 import { navigation } from '../content/navigation';
 import { addressLines, mapLinks, site, whatsappLink } from '../config/site';
 import { withBase } from '../lib/url';
+import { demoMode } from '../config/flags';
 
 interface Props {
   /** Links de âncora apontam para a página inicial (páginas internas). */
@@ -122,6 +123,7 @@ const legal = [
 
     <div class="footer__bottom">
       <p>© {year} {site.name}{legal.length > 0 && ` · ${legal.join(' · ')}`}</p>
+      {demoMode && <p class="footer__demo">Versão de demonstração — conteúdo em validação; o formulário não envia dados.</p>}
       <a href={withBase('/politica-de-privacidade/')}>Política de privacidade</a>
     </div>
   </div>
@@ -241,6 +243,10 @@ const legal = [
     border-top: 1px solid rgb(252 250 246 / 0.12);
     font-size: 0.8125rem;
     color: var(--on-dark-soft);
+  }
+
+  .footer__demo {
+    color: var(--gold-light);
   }
 
   .footer__bottom a {

@@ -40,6 +40,7 @@ test('produção não exibe conteúdo pendente', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByText('Categoria a confirmar')).toHaveCount(0);
   await expect(page.locator('.photo-placeholder__file')).toHaveCount(0);
+  await expect(page.locator('#galeria .photo-placeholder__scene')).toHaveCount(8);
   await expect(page.getByRole('heading', { name: 'Suítes para cada momento da sua viagem' })).toBeVisible();
 });
 
