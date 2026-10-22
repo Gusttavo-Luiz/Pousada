@@ -1,0 +1,143 @@
+---
+/**
+ * Ilustração das serras mineiras sob o luar — usada enquanto não houver
+ * fotografia oficial. É uma ilustração (não representa a propriedade).
+ * As camadas com `data-depth` recebem um leve movimento de paralaxe.
+ */
+interface Props {
+  tone?: 'night' | 'dawn';
+  class?: string;
+}
+
+const { tone = 'night', class: className } = Astro.props;
+const id = `ls-${tone}`;
+
+const palette =
+  tone === 'night'
+    ? {
+        sky: ['#101b16', '#1b2c24', '#33493d'],
+        moon: '#f3eee5',
+        halo: '#d8c49e',
+        layers: ['#30483b', '#263d32', '#1c2f26', '#14211b'],
+        mist: '#f3eee5',
+      }
+    : {
+        sky: ['#f6f1e8', '#f0e8da', '#e6dac6'],
+        moon: '#fcfaf6',
+        halo: '#d8c49e',
+        layers: ['#cfc8b3', '#aeae95', '#848a72', '#5a6552'],
+        mist: '#fcfaf6',
+      };
+
+const moon = tone === 'night' ? { x: 1170, y: 250, r: 62 } : { x: 1340, y: 420, r: 40 };
+
+const stars =
+  tone === 'night'
+    ? [
+        [140, 90, 1.4], [260, 170, 1], [380, 60, 1.2], [520, 140, 0.9], [610, 70, 1.5], [720, 200, 1],
+        [840, 110, 1.2], [930, 40, 1], [1010, 160, 0.8], [1300, 90, 1.3], [1380, 190, 1], [1460, 60, 1.1],
+        [1540, 140, 0.9], [90, 250, 0.9], [460, 260, 1], [1250, 300, 0.8], [1500, 280, 1], [700, 300, 0.7],
+      ]
+    : [];
+---
+
+<svg
+  class:list={['landscape', `landscape--${tone}`, className]}
+  viewBox={tone === 'night' ? '0 0 1600 900' : '0 -340 1600 1240'}
+  preserveAspectRatio="xMidYMax slice"
+  aria-hidden="true"
+  focusable="false"
+>
+  <defs>
+    <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color={palette.sky[0]}></stop>
+      <stop offset=".55" stop-color={palette.sky[1]}></stop>
+      <stop offset="1" stop-color={palette.sky[2]}></stop>
+    </linearGradient>
+    <radialGradient id={`${id}-halo`}>
+      <stop offset="0" stop-color={palette.halo} stop-opacity=".35"></stop>
+      <stop offset=".35" stop-color={palette.halo} stop-opacity=".12"></stop>
+      <stop offset="1" stop-color={palette.halo} stop-opacity="0"></stop>
+    </radialGradient>
+    <linearGradient id={`${id}-mist`} x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color={palette.mist} stop-opacity="0"></stop>
+      <stop offset=".5" stop-color={palette.mist} stop-opacity={tone === 'night' ? '.07' : '.35'}></stop>
+      <stop offset="1" stop-color={palette.mist} stop-opacity="0"></stop>
+    </linearGradient>
+  </defs>
+
+  <rect y="-400" width="1600" height="1300" fill={`url(#${id}-sky)`}></rect>
+
+  <g data-depth="0.38">
+    {stars.map(([x, y, r]) => <circle cx={x} cy={y} r={r} fill="#f3eee5" opacity=".55" />)}
+    <circle class="landscape__moon-lg" cx={moon.x} cy={moon.y} r={moon.r * 5} fill={`url(#${id}-halo)`}></circle>
+    <circle class="landscape__moon landscape__moon-lg" cx={moon.x} cy={moon.y} r={moon.r} fill={palette.moon}></circle>
+    {
+      tone === 'night' && (
+        <>
+          <circle class="landscape__moon-sm" cx="955" cy="150" r="200" fill={`url(#${id}-halo)`} />
+          <circle class="landscape__moon landscape__moon-sm" cx="955" cy="150" r="40" fill={palette.moon} />
+        </>
+      )
+    }
+  </g>
+
+  <g data-depth="0.28">
+    <path
+      d="M0 560 70 532l60 16 90-62 70 30 64-40 96 58 70-24 110 36 84-70 74 44 66-12 100 52 92-60 84 42 76-26 94 46 82-32 108 40 110-18V900H0Z"
+      fill={palette.layers[0]}></path>
+  </g>
+  <rect y="500" width="1600" height="180" fill={`url(#${id}-mist)`}></rect>
+  <g data-depth="0.2">
+    <path
+      d="M0 640c120-38 210-70 330-46s200 52 320 18 210-70 340-40 220 64 330 36 170-46 280-30v322H0Z"
+      fill={palette.layers[1]}></path>
+  </g>
+  <g data-depth="0.12">
+    <path
+      d="M0 724c150-40 280-58 420-30s240 40 380 4 260-46 400-14 280 38 400 14v202H0Z"
+      fill={palette.layers[2]}></path>
+  </g>
+  <g data-depth="0.05">
+    <path d="M0 812c200-30 360-44 560-18s340 26 520 2 360-22 520 0v104H0Z" fill={palette.layers[3]}></path>
+  </g>
+</svg>
+
+<style>
+  .landscape {
+    width: 100%;
+    height: 100%;
+  }
+
+  .landscape g {
+    will-change: transform;
+  }
+
+  /* Em telas estreitas a lua é reposicionada para continuar visível. */
+  .landscape__moon-sm {
+    display: none;
+  }
+
+  @media (max-aspect-ratio: 4/5) {
+    .landscape--night .landscape__moon-sm {
+      display: inline;
+    }
+
+    .landscape--night .landscape__moon-lg {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .landscape--night .landscape__moon {
+      animation: moon-rise 2.4s var(--ease-out) both;
+    }
+  }
+
+  @keyframes moon-rise {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+  }
+</style>

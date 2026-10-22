@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import Rooms from '../components/Rooms.astro';
+import Experience from '../components/Experience.astro';
+import Gallery from '../components/Gallery.astro';
+import Reviews from '../components/Reviews.astro';
+import Location from '../components/Location.astro';
+import Booking from '../components/Booking.astro';
+import FAQ from '../components/FAQ.astro';
+import FinalCTA from '../components/FinalCTA.astro';
+import Lightbox from '../components/Lightbox.astro';
+import MobileCTA from '../components/MobileCTA.astro';
+import { faq } from '../content/faq';
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: { '@type': 'Answer', text: item.answer },
+  })),
+};
+---
+
+<BaseLayout
+  title="Luar de Minas Suítes | Hospedagem e suítes em Lavras Novas, MG"
+  description="Luar de Minas Suítes: hospedagem em Lavras Novas, Minas Gerais. Suítes confortáveis com café da manhã, Wi-Fi gratuito e banheiro privativo — um refúgio romântico nas montanhas. Consulte a disponibilidade."
+  home
+  jsonLd={[faqSchema]}
+>
+  <Hero />
+  <About />
+  <Rooms />
+  <Experience />
+  <Gallery />
+  <Reviews />
+  <Location />
+  <Booking />
+  <FAQ />
+  <FinalCTA />
+  <Fragment slot="after">
+    <Lightbox />
+    <MobileCTA />
+  </Fragment>
+</BaseLayout>

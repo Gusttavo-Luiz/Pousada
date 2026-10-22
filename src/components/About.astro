@@ -1,0 +1,178 @@
+---
+import Icon from './Icon.astro';
+import Photo from './Photo.astro';
+import { featuredPhotos } from '../content/photos';
+import { highlights } from '../content/amenities';
+---
+
+<section class="about section" id="sobre" aria-labelledby="about-title">
+  <div class="container about__grid">
+    <div class="about__media" data-reveal>
+      <div class="about__frame about__frame--main">
+        <Photo {...featuredPhotos.about} sizes="(min-width: 960px) 46vw, 100vw" widths={[600, 900, 1300]} />
+      </div>
+      <div class="about__frame about__frame--detail">
+        <Photo {...featuredPhotos.aboutDetail} sizes="(min-width: 960px) 20vw, 45vw" widths={[400, 700]} />
+      </div>
+      <p class="about__caption" aria-hidden="true">Lavras Novas · MG</p>
+    </div>
+
+    <div class="about__body">
+      <p class="eyebrow" data-reveal>Hospedagem em Lavras Novas</p>
+      <h2 class="display about__title" id="about-title" data-reveal style="--reveal-delay:100">
+        Um lugar especial para <em>se sentir bem.</em>
+      </h2>
+      <p class="lead about__text" data-reveal style="--reveal-delay:180">
+        No coração de Lavras Novas, o Luar de Minas Suítes convida você a aproveitar dias de tranquilidade, conforto
+        e hospitalidade mineira. Um ambiente acolhedor para descansar, explorar as belezas da região e viver momentos
+        especiais a dois, com a família ou com quem faz parte da sua história.
+      </p>
+
+      <ul class="about__highlights" aria-label="Destaques da hospedagem">
+        {
+          highlights.map((item, i) => (
+            <li data-reveal style={`--reveal-delay:${220 + i * 70}`}>
+              <span class="about__icon">
+                <Icon name={item.icon} size={22} />
+              </span>
+              <span>{item.title}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <a class="link-arrow" href="#experiencia" data-reveal>
+        Descubra o Luar de Minas <Icon name="arrowRight" />
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: clamp(3rem, 2rem + 5vw, 7.5rem);
+    align-items: center;
+  }
+
+  .about__media {
+    position: relative;
+    padding-bottom: 14%;
+    padding-right: 12%;
+  }
+
+  .about__frame {
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+  }
+
+  .about__frame--main {
+    aspect-ratio: 4 / 5;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .about__frame--detail {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 46%;
+    aspect-ratio: 1;
+    border: 8px solid var(--warm-white);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .about__frame :global(img),
+  .about__frame :global(picture) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .about__caption {
+    position: absolute;
+    top: 2rem;
+    right: 0;
+    writing-mode: vertical-rl;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--earth);
+  }
+
+  .about__title {
+    margin-top: 1.25rem;
+  }
+
+  .about__title em,
+  :global(.section-title em) {
+    font-style: italic;
+    color: var(--earth);
+  }
+
+  .about__text {
+    margin-top: 1.75rem;
+  }
+
+  .about__highlights {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-block: 2.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .about__highlights li {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1.15rem 0.75rem 1.15rem 0;
+    border-bottom: 1px solid var(--line);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--forest);
+  }
+
+  .about__highlights li:nth-child(odd) {
+    border-right: 1px solid var(--line);
+  }
+
+  .about__highlights li:nth-child(even) {
+    padding-left: 1.25rem;
+  }
+
+  .about__icon {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--beige);
+    color: var(--earth);
+  }
+
+  @media (max-width: 960px) {
+    .about__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .about__media {
+      max-width: 560px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .about__highlights {
+      grid-template-columns: 1fr;
+    }
+
+    .about__highlights li:nth-child(odd) {
+      border-right: 0;
+    }
+
+    .about__highlights li:nth-child(even) {
+      padding-left: 0;
+    }
+  }
+</style>

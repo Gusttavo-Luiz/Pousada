@@ -1,0 +1,262 @@
+---
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import { navigation } from '../content/navigation';
+import { addressLines, mapLinks, site, whatsappLink } from '../config/site';
+import { withBase } from '../lib/url';
+
+interface Props {
+  /** Links de âncora apontam para a página inicial (páginas internas). */
+  external?: boolean;
+}
+
+const { external = false } = Astro.props;
+const home = withBase('/');
+const href = (anchor: string) => (external ? `${home}${anchor}` : anchor);
+const year = new Date().getFullYear();
+
+const contacts = [
+  site.contact.whatsapp && {
+    icon: 'whatsapp' as const,
+    label: site.contact.phoneDisplay ? `WhatsApp ${site.contact.phoneDisplay}` : 'WhatsApp',
+    href: whatsappLink(),
+    external: true,
+  },
+  !site.contact.whatsapp && site.contact.phoneDisplay && {
+    icon: 'phone' as const,
+    label: site.contact.phoneDisplay,
+    href: `tel:+${site.contact.phoneDisplay.replace(/\D/g, '')}`,
+    external: false,
+  },
+  site.contact.email && {
+    icon: 'mail' as const,
+    label: site.contact.email,
+    href: `mailto:${site.contact.email}`,
+    external: false,
+  },
+].filter((c): c is Exclude<typeof c, false | ''> => Boolean(c));
+
+const socials = [
+  site.social.instagram && { icon: 'instagram' as const, label: 'Instagram', href: site.social.instagram },
+  site.social.facebook && { icon: 'facebook' as const, label: 'Facebook', href: site.social.facebook },
+].filter((s): s is Exclude<typeof s, ''> => Boolean(s));
+
+const legal = [
+  site.legal.companyName,
+  site.legal.cnpj && `CNPJ ${site.legal.cnpj}`,
+  site.legal.cadastur && `Cadastur ${site.legal.cadastur}`,
+].filter(Boolean);
+---
+
+<footer class="footer on-dark">
+  <div class="container">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <Logo tone="light" size="lg" />
+        <p>{site.tagline}</p>
+      </div>
+      <a class="btn btn--gold" href={href('#reservas')}>
+        Consultar disponibilidade <Icon name="arrowRight" class="icon--move" />
+      </a>
+    </div>
+
+    <div class="footer__cols">
+      <div>
+        <h2 class="footer__heading">Endereço</h2>
+        <address>
+          {addressLines.map((line) => <span>{line}</span>)}
+        </address>
+        <a class="footer__link" href={mapLinks.view} target="_blank" rel="noopener">
+          <Icon name="pin" size={16} /> Ver no mapa <span class="sr-only">(abre em nova aba)</span>
+        </a>
+      </div>
+
+      <nav aria-label="Rodapé">
+        <h2 class="footer__heading">Navegação</h2>
+        <ul>
+          {
+            navigation.map((item) => (
+              <li>
+                <a href={href(item.href)}>{item.label}</a>
+              </li>
+            ))
+          }
+          <li><a href={href('#perguntas')}>Perguntas frequentes</a></li>
+        </ul>
+      </nav>
+
+      <div>
+        <h2 class="footer__heading">Contato</h2>
+        {
+          contacts.length > 0 ? (
+            <ul>
+              {contacts.map((c) => (
+                <li>
+                  <a class="footer__link" href={c.href} {...(c.external ? { target: '_blank', rel: 'noopener' } : {})}>
+                    <Icon name={c.icon} size={16} /> {c.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="footer__muted">
+              Use o formulário <a href={href('#reservas')}>Consultar disponibilidade</a>. Canais oficiais em breve.
+            </p>
+          )
+        }
+        {
+          socials.length > 0 && (
+            <ul class="footer__social">
+              {socials.map((s) => (
+                <li>
+                  <a href={s.href} target="_blank" rel="noopener" aria-label={`${s.label} (abre em nova aba)`}>
+                    <Icon name={s.icon} size={20} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+    </div>
+
+    <div class="footer__bottom">
+      <p>© {year} {site.name}{legal.length > 0 && ` · ${legal.join(' · ')}`}</p>
+      <a href={withBase('/politica-de-privacidade/')}>Política de privacidade</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding-block: clamp(3.5rem, 2.5rem + 4vw, 6rem) 2rem;
+    background: var(--forest-night);
+    color: var(--warm-white);
+    font-size: 0.9375rem;
+  }
+
+  .footer a {
+    text-decoration: none;
+  }
+
+  .footer a:hover {
+    color: var(--gold-light);
+  }
+
+  .footer__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid rgb(252 250 246 / 0.12);
+  }
+
+  .footer__top .btn:hover {
+    color: var(--forest-night);
+  }
+
+  .footer__brand p {
+    max-width: 30rem;
+    margin-top: 1.25rem;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-style: italic;
+    color: var(--on-dark-soft);
+  }
+
+  .footer__cols {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.5rem;
+    padding-block: 3rem;
+  }
+
+  .footer__heading {
+    margin-bottom: 1rem;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+  }
+
+  .footer address {
+    display: grid;
+    gap: 0.2rem;
+    font-style: normal;
+    color: var(--on-dark-soft);
+  }
+
+  .footer ul {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .footer nav a,
+  .footer__muted {
+    color: var(--on-dark-soft);
+  }
+
+  .footer__muted a {
+    color: var(--warm-white);
+    text-decoration: underline;
+  }
+
+  .footer__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    font-weight: 600;
+  }
+
+  .footer ul .footer__link {
+    margin-top: 0;
+  }
+
+  .footer__social {
+    display: flex !important;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+  }
+
+  .footer__social a {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid rgb(252 250 246 / 0.25);
+    border-radius: 50%;
+  }
+
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgb(252 250 246 / 0.12);
+    font-size: 0.8125rem;
+    color: var(--on-dark-soft);
+  }
+
+  .footer__bottom a {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 760px) {
+    .footer__cols {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  @media (max-width: 1080px) {
+    .footer {
+      padding-bottom: calc(2rem + 4.5rem);
+    }
+  }
+</style>

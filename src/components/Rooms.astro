@@ -1,0 +1,135 @@
+---
+import Icon from './Icon.astro';
+import RoomCard from './RoomCard.astro';
+import SectionHeading from './SectionHeading.astro';
+import { rooms, roomBaseAmenities } from '../content/rooms';
+import { showPending } from '../config/flags';
+
+const visible = rooms.filter((room) => room.status === 'confirmado' || showPending);
+const hasPending = visible.some((room) => room.status !== 'confirmado');
+---
+
+<section class="rooms section" id="acomodacoes" aria-labelledby="rooms-title">
+  <div class="container">
+    <SectionHeading eyebrow="Acomodações" id="rooms-title" align="split">
+      Encontre seu espaço para <em>descansar.</em>
+      <Fragment slot="lead">Conforto, privacidade e tranquilidade para aproveitar cada momento da sua viagem.</Fragment>
+    </SectionHeading>
+
+    {
+      visible.length > 0 ? (
+        <>
+          <div class="rooms__grid" data-room-list>
+            {visible.map((room, index) => (
+              <RoomCard room={room} index={index} />
+            ))}
+          </div>
+          {hasPending && (
+            <p class="note rooms__note">
+              <Icon name="info" size={16} />
+              Categorias citadas em informações de hospedagem, exibidas apenas nesta versão de demonstração até a
+              confirmação pela equipe. Camas, capacidade e preços são informados na consulta.
+            </p>
+          )}
+        </>
+      ) : (
+        <div class="rooms__empty" data-reveal>
+          <div>
+            <h3>Suítes para cada momento da sua viagem</h3>
+            <p class="muted">
+              As categorias de acomodação estão sendo atualizadas. Informe suas datas e a equipe indicará as opções
+              disponíveis para a sua estadia.
+            </p>
+          </div>
+          <ul>
+            {roomBaseAmenities.map((item) => (
+              <li>
+                <Icon name="check" size={16} /> {item}
+              </li>
+            ))}
+          </ul>
+          <a class="btn" href="#reservas">
+            Consultar disponibilidade <Icon name="arrowRight" class="icon--move" />
+          </a>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .rooms {
+    background: var(--beige);
+  }
+
+  .rooms__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.25rem, 0.8rem + 2vw, 2.5rem);
+  }
+
+  .rooms__note {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    max-width: 48rem;
+    margin-top: 2rem;
+  }
+
+  .rooms__note :global(.icon) {
+    flex: none;
+    margin-top: 0.25rem;
+    color: var(--earth);
+  }
+
+  .rooms__empty {
+    display: grid;
+    gap: 1.5rem;
+    max-width: 44rem;
+    padding: clamp(1.75rem, 1rem + 3vw, 3rem);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-lg);
+    background: var(--warm-white);
+  }
+
+  .rooms__empty h3 {
+    margin-bottom: 0.75rem;
+    font-size: var(--step-2);
+    color: var(--forest);
+  }
+
+  .rooms__empty ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    font-size: 0.9375rem;
+  }
+
+  .rooms__empty li {
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .rooms__empty .btn {
+    justify-self: start;
+  }
+
+  @media (max-width: 860px) {
+    .rooms__grid {
+      grid-auto-flow: column;
+      grid-template-columns: none;
+      grid-auto-columns: min(86%, 420px);
+      margin-inline: calc(var(--gutter) * -1);
+      padding: 0.25rem var(--gutter) 1.25rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--gutter);
+      scrollbar-width: thin;
+    }
+
+    .rooms__grid > :global(*) {
+      scroll-snap-align: start;
+    }
+  }
+</style>

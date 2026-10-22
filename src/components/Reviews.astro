@@ -1,0 +1,273 @@
+---
+import Icon from './Icon.astro';
+import SectionHeading from './SectionHeading.astro';
+import { reviews, formatScore } from '../content/reviews';
+import { showPending } from '../config/flags';
+
+const { source } = reviews;
+const sourceText = source.platform
+  ? `Notas e trechos de avaliações publicadas por hóspedes no ${source.platform}`
+  : 'Notas e trechos de avaliações publicadas por hóspedes em plataforma de reservas';
+---
+
+<section class="reviews section" id="avaliacoes" aria-labelledby="reviews-title">
+  <div class="container">
+    <SectionHeading eyebrow="Avaliações" id="reviews-title" align="center">
+      Experiências que deixam <em>saudade.</em>
+    </SectionHeading>
+
+    <div class="reviews__summary">
+      <div class="score" data-reveal>
+        <p class="score__value">
+          <span class="score__number">{formatScore(reviews.score)}</span>
+          <span class="score__scale">/{reviews.scale}</span>
+        </p>
+        <p class="score__label">{reviews.label}</p>
+        <p class="score__count">{reviews.count} avaliações</p>
+      </div>
+
+      <ul class="bars" aria-label="Notas por categoria">
+        {
+          reviews.categories.map((cat, i) => (
+            <li class="bars__item" data-reveal style={`--reveal-delay:${i * 60}`}>
+              <span class="bars__label">{cat.label}</span>
+              <span class="bars__value">{formatScore(cat.score)}</span>
+              <span class="bars__track" aria-hidden="true">
+                <span class="bars__fill" style={`--w:${(cat.score / reviews.scale) * 100}%`} />
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <ul class="quotes">
+      {
+        reviews.testimonials.map((t, i) => (
+          <li data-reveal style={`--reveal-delay:${(i % 2) * 100}`}>
+            <figure class="quote">
+              <Icon name="quote" size={30} class="quote__mark" />
+              <blockquote>
+                <p>{t.quote}</p>
+              </blockquote>
+              <figcaption>
+                {t.author ? `${t.author} · ` : ''}Trecho de avaliação de hóspede{source.platform ? ` · ${source.platform}` : ''}
+              </figcaption>
+            </figure>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="reviews__footer" data-reveal>
+      <p class="note">
+        {sourceText}. Dados de referência: {reviews.updatedAt} — sujeitos a alteração.
+      </p>
+      {
+        source.url ? (
+          <a class="btn btn--ghost" href={source.url} target="_blank" rel="noopener">
+            Consulte nossas avaliações <Icon name="external" />
+            <span class="sr-only">(abre em nova aba)</span>
+          </a>
+        ) : (
+          showPending && (
+            <span class="reviews__pending">
+              <span class="btn btn--ghost" aria-disabled="true">Consulte nossas avaliações</span>
+              <span class="badge-pending">Link da plataforma a configurar</span>
+            </span>
+          )
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .reviews {
+    background: var(--warm-white);
+  }
+
+  .reviews__summary {
+    display: grid;
+    grid-template-columns: minmax(240px, 0.75fr) minmax(0, 1.6fr);
+    gap: clamp(2rem, 1rem + 4vw, 5rem);
+    align-items: center;
+    padding: clamp(1.75rem, 1rem + 3vw, 3.5rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--beige);
+  }
+
+  .score {
+    display: grid;
+    justify-items: center;
+    padding-block: 1rem;
+    text-align: center;
+  }
+
+  .score__value {
+    display: flex;
+    align-items: baseline;
+    font-family: var(--font-display);
+    line-height: 0.9;
+    color: var(--forest);
+  }
+
+  .score__number {
+    font-size: clamp(4rem, 2.8rem + 5vw, 6.5rem);
+    font-weight: 400;
+  }
+
+  .score__scale {
+    font-size: 1.75rem;
+    color: var(--earth);
+  }
+
+  .score__label {
+    margin-top: 0.75rem;
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-style: italic;
+    color: var(--forest);
+  }
+
+  .score__count {
+    margin-top: 0.2rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .bars {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.4rem 2.5rem;
+  }
+
+  .bars__item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.5rem;
+    align-items: baseline;
+  }
+
+  .bars__label {
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+
+  .bars__value {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--forest);
+  }
+
+  .bars__track {
+    grid-column: 1 / -1;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--line-strong);
+    overflow: hidden;
+  }
+
+  .bars__fill {
+    display: block;
+    width: var(--w);
+    height: 100%;
+    background: var(--forest);
+    transform-origin: left;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .js .bars__item .bars__fill {
+      transform: scaleX(0);
+      transition: transform 1.4s var(--ease-out);
+      transition-delay: calc(var(--reveal-delay, 0) * 1ms + 200ms);
+    }
+
+    .js .bars__item.is-visible .bars__fill {
+      transform: none;
+    }
+  }
+
+  .quotes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1rem, 0.5rem + 2vw, 2rem);
+    margin-top: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  }
+
+  .quote {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    margin: 0;
+    padding: clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+  }
+
+  .quote :global(.quote__mark) {
+    color: var(--gold);
+  }
+
+  .quote blockquote {
+    flex: 1;
+    margin: 1.1rem 0 1.5rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 1rem + 0.4vw, 1.3rem);
+    line-height: 1.5;
+    color: var(--forest);
+  }
+
+  .quote figcaption {
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .reviews__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+
+  .reviews__pending {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .reviews__pending .btn {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .reviews__footer .note {
+    max-width: 40rem;
+  }
+
+  @media (max-width: 860px) {
+    .reviews__summary,
+    .quotes {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .bars {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

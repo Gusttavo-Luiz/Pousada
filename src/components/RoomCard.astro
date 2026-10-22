@@ -1,0 +1,230 @@
+---
+import Icon from './Icon.astro';
+import Photo from './Photo.astro';
+import type { Room } from '../content/rooms';
+
+interface Props {
+  room: Room;
+  index: number;
+}
+
+const { room, index } = Astro.props;
+const [cover, ...more] = room.photos;
+const pending = room.status !== 'confirmado';
+const group = `quarto-${room.id}`;
+---
+
+<article class="room" data-reveal style={`--reveal-delay:${(index % 2) * 120}`} aria-labelledby={`${room.id}-title`}>
+  <div class="room__media">
+    {
+      cover && (
+        <button class="room__zoom" type="button" data-lightbox-item={group} data-caption={`${room.name} — ${cover.label}`} aria-label={`Ampliar foto: ${room.name}`}>
+          <Photo {...cover} sizes="(min-width: 900px) 46vw, 88vw" widths={[480, 800, 1200]} zoomable />
+        </button>
+      )
+    }
+    {
+      more.map((photo) => (
+        <button class="room__zoom" type="button" hidden data-lightbox-item={group} data-caption={`${room.name} — ${photo.label}`} aria-label={`Ampliar foto: ${photo.label}`}>
+          <Photo {...photo} widths={[800, 1200]} zoomable />
+        </button>
+      ))
+    }
+    <div class="room__tags">
+      {pending && <span class="badge-pending">Categoria a confirmar</span>}
+    </div>
+    {
+      more.length > 0 && (
+        <button class="room__gallery-btn" type="button" data-lightbox-open={group}>
+          <Icon name="image" size={16} /> Ver {room.photos.length} fotos
+        </button>
+      )
+    }
+  </div>
+
+  <div class="room__body">
+    <p class="room__index" aria-hidden="true">{String(index + 1).padStart(2, '0')}</p>
+    <h3 class="room__title" id={`${room.id}-title`}>{room.name}</h3>
+    <p class="room__desc">{room.description}</p>
+
+    <dl class="room__specs">
+      <div>
+        <dt><Icon name="bed" size={18} /> Camas</dt>
+        <dd>{room.beds ?? 'Consulte a equipe'}</dd>
+      </div>
+      <div>
+        <dt><Icon name="users" size={18} /> Hóspedes</dt>
+        <dd>{room.capacity ?? 'Consulte a equipe'}</dd>
+      </div>
+    </dl>
+
+    <ul class="room__amenities" aria-label={`Comodidades — ${room.name}`}>
+      {
+        room.amenities.map((item) => (
+          <li>
+            <Icon name="check" size={16} /> {item}
+          </li>
+        ))
+      }
+    </ul>
+
+    <a class="btn btn--ghost room__cta" href="#reservas" data-room-interest={room.name}>
+      Consultar disponibilidade <Icon name="arrowRight" class="icon--move" />
+    </a>
+  </div>
+</article>
+
+<style>
+  .room {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--warm-white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition:
+      box-shadow 0.5s var(--ease),
+      transform 0.5s var(--ease);
+  }
+
+  .room:hover {
+    box-shadow: var(--shadow-lift);
+  }
+
+  .room__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--beige);
+  }
+
+  .room__zoom {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+  }
+
+  .room__zoom :global(img),
+  .room__zoom :global(picture),
+  .room__zoom :global(.photo-placeholder) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s var(--ease-out);
+  }
+
+  .room:hover .room__zoom :global(img),
+  .room:hover .room__zoom :global(.photo-placeholder__art) {
+    transform: scale(1.04);
+  }
+
+  .room__tags {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    pointer-events: none;
+  }
+
+  .room__gallery-btn {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.5rem 0.85rem;
+    border: 0;
+    border-radius: 999px;
+    background: rgb(252 250 246 / 0.92);
+    color: var(--forest);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .room__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: clamp(1.5rem, 1.2rem + 1.2vw, 2.25rem);
+  }
+
+  .room__index {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--earth);
+  }
+
+  .room__title {
+    margin-top: 0.35rem;
+    font-size: var(--step-2);
+    color: var(--forest);
+  }
+
+  .room__desc {
+    margin-top: 0.75rem;
+    color: var(--ink-soft);
+  }
+
+  .room__specs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0 0;
+    padding-block: 1.1rem;
+    border-block: 1px solid var(--line);
+  }
+
+  .room__specs dt {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--earth);
+  }
+
+  .room__specs dd {
+    margin: 0.3rem 0 0;
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+
+  .room__amenities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin-top: 1.25rem;
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+  }
+
+  .room__amenities li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .room__amenities :global(.icon) {
+    color: var(--olive);
+  }
+
+  .room__cta {
+    align-self: flex-start;
+    margin-top: auto;
+  }
+
+  .room__amenities {
+    margin-bottom: 1.75rem;
+  }
+</style>

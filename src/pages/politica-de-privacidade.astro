@@ -1,0 +1,92 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site, addressLines } from '../config/site';
+import { withBase } from '../lib/url';
+
+const controller = site.legal.companyName || site.name;
+const contact = site.contact.email || site.contact.phoneDisplay;
+---
+
+<BaseLayout
+  title="Política de privacidade | Luar de Minas Suítes"
+  description="Como o site do Luar de Minas Suítes trata dados pessoais, em conformidade com a LGPD."
+>
+  <article class="section legal">
+    <div class="container legal__body">
+      <p class="eyebrow">Transparência</p>
+      <h1 class="display">Política de privacidade</h1>
+      <p class="lead">
+        Este site foi pensado para coletar o mínimo de informações possível. Esta página explica, de forma simples,
+        como seus dados são tratados, conforme a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).
+      </p>
+
+      <h2>Quem é o responsável</h2>
+      <p>
+        {controller}{site.legal.cnpj && `, CNPJ ${site.legal.cnpj}`}, {addressLines.join(', ')}.
+        {contact ? ` Contato para assuntos de privacidade: ${contact}.` : ''}
+      </p>
+
+      <h2>Formulário de consulta de disponibilidade</h2>
+      <p>
+        As datas e o número de hóspedes informados no formulário são processados no seu próprio navegador. Este site
+        não possui banco de dados e não armazena essas informações. Ao enviar a consulta, você é direcionado ao canal
+        oficial de atendimento indicado na tela (por exemplo, sistema de reservas, WhatsApp ou e-mail) e o tratamento
+        dos dados passa a seguir as regras desse canal.
+      </p>
+
+      <h2>Mapa</h2>
+      <p>
+        O mapa interativo do Google Maps só é carregado quando você clica em “Carregar mapa”. A partir desse momento,
+        o Google pode coletar dados de navegação conforme a sua própria política de privacidade. Os botões “Como
+        chegar” e “Abrir no Google Maps” levam ao site do Google.
+      </p>
+
+      <h2>Cookies e estatísticas</h2>
+      <p>
+        Este site não utiliza cookies de rastreamento, publicidade ou ferramentas de análise de audiência. As fontes e
+        imagens são servidas pelo próprio site.
+      </p>
+
+      <h2>Seus direitos</h2>
+      <p>
+        Você pode solicitar a confirmação de tratamento, o acesso, a correção ou a exclusão de dados pessoais
+        eventualmente tratados pela hospedagem
+        {contact ? `, pelo contato ${contact}.` : ', pelos canais oficiais de atendimento.'}
+      </p>
+
+      <p class="note">Última atualização: outubro de 2026.</p>
+      <a class="btn btn--ghost" href={withBase('/')}>Voltar para o início</a>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .legal {
+    padding-top: calc(var(--header-h) + 4rem);
+  }
+
+  .legal__body {
+    display: grid;
+    gap: 1.1rem;
+    justify-items: start;
+    max-width: 50rem;
+  }
+
+  .legal h1 {
+    margin-top: 0.5rem;
+  }
+
+  .legal h2 {
+    margin-top: 1.5rem;
+    font-size: var(--step-2);
+    color: var(--forest);
+  }
+
+  .legal p {
+    color: var(--ink-soft);
+  }
+
+  .legal .btn {
+    margin-top: 1rem;
+  }
+</style>

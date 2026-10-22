@@ -1,0 +1,188 @@
+---
+import Icon from './Icon.astro';
+import { amenities } from '../content/amenities';
+---
+
+<section class="experience section on-dark" id="experiencia" aria-labelledby="experience-title">
+  <div class="container experience__grid">
+    <div class="experience__intro">
+      <p class="eyebrow" data-reveal>Experiência e comodidades</p>
+      <h2 class="display section-title experience__title" id="experience-title" data-reveal style="--reveal-delay:100">
+        Pequenos detalhes que fazem <em>a diferença.</em>
+      </h2>
+      <p class="lead experience__lead" data-reveal style="--reveal-delay:180">
+        Uma estadia tranquila começa pelo cuidado com o essencial: conforto, privacidade e atenção em cada etapa.
+      </p>
+
+      <aside class="experience__pet" aria-labelledby="pet-title" data-reveal style="--reveal-delay:240">
+        <Icon name="paw" size={26} />
+        <div>
+          <h3 id="pet-title">Política para animais de estimação</h3>
+          <p>
+            Pets são aceitos mediante solicitação prévia e pode haver cobrança adicional. Consulte as condições com a
+            equipe antes de confirmar a sua reserva.
+          </p>
+        </div>
+      </aside>
+    </div>
+
+    <ul class="experience__list">
+      {
+        amenities.map((item, i) => (
+          <li data-reveal style={`--reveal-delay:${(i % 2) * 90 + 60}`}>
+            <span class="experience__icon">
+              <Icon name={item.icon} size={26} />
+            </span>
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .experience {
+    position: relative;
+    overflow: hidden;
+    background: var(--forest);
+    color: var(--warm-white);
+  }
+
+  .experience__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr);
+    gap: clamp(3rem, 2rem + 5vw, 7rem);
+    align-items: start;
+  }
+
+  .experience__intro {
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+  }
+
+  .experience__title em {
+    color: var(--gold-light);
+  }
+
+  .experience__lead {
+    margin-top: 1.5rem;
+  }
+
+  .experience__pet {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding: 1.4rem 1.5rem;
+    border: 1px solid rgb(216 196 158 / 0.35);
+    border-radius: var(--radius);
+    background: rgb(20 33 27 / 0.35);
+  }
+
+  .experience__pet :global(.icon) {
+    flex: none;
+    color: var(--gold-light);
+  }
+
+  .experience__pet h3 {
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  .experience__pet p {
+    margin-top: 0.4rem;
+    font-size: 0.9375rem;
+    color: var(--on-dark-soft);
+  }
+
+  .experience__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid rgb(252 250 246 / 0.14);
+  }
+
+  .experience__list li {
+    padding: 2rem 1.75rem 2rem 0;
+    border-bottom: 1px solid rgb(252 250 246 / 0.14);
+  }
+
+  .experience__list li:nth-child(even) {
+    padding-left: 1.75rem;
+    border-left: 1px solid rgb(252 250 246 / 0.14);
+  }
+
+  /* Item ímpar no fim ocupa a linha inteira, em formato horizontal. */
+  .experience__list li:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 1.25rem;
+    align-items: center;
+  }
+
+  .experience__list li:last-child:nth-child(odd) .experience__icon {
+    grid-row: span 2;
+  }
+
+  .experience__list li:last-child:nth-child(odd) h3 {
+    margin-top: 0;
+  }
+
+  .experience__icon {
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border: 1px solid rgb(216 196 158 / 0.4);
+    border-radius: 50%;
+    color: var(--gold-light);
+  }
+
+  .experience__list h3 {
+    margin-top: 1.25rem;
+    font-size: 1.3rem;
+  }
+
+  .experience__list p {
+    margin-top: 0.5rem;
+    font-size: 0.9375rem;
+    color: var(--on-dark-soft);
+  }
+
+  @media (max-width: 960px) {
+    .experience__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .experience__intro {
+      position: static;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .experience__list {
+      grid-template-columns: 1fr;
+    }
+
+    .experience__list li,
+    .experience__list li:nth-child(even) {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      column-gap: 1.1rem;
+      padding: 1.4rem 0;
+      border-left: 0;
+    }
+
+    .experience__icon {
+      grid-row: span 2;
+    }
+
+    .experience__list h3 {
+      margin-top: 0.2rem;
+    }
+  }
+</style>

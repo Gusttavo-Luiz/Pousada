@@ -1,0 +1,366 @@
+---
+import Icon from './Icon.astro';
+import SectionHeading from './SectionHeading.astro';
+import { addressLines, mapLinks } from '../config/site';
+import { nearby, ouroPreto } from '../content/location';
+import { reviews, formatScore } from '../content/reviews';
+
+const locationScore = reviews.categories.find((c) => c.label === 'Localização');
+---
+
+<section class="location section" id="localizacao" aria-labelledby="location-title">
+  <div class="container">
+    <SectionHeading eyebrow="Localização" id="location-title" align="split">
+      Perto do que importa. <em>Longe da correria.</em>
+      <Fragment slot="lead">
+        Em Lavras Novas, com restaurantes a poucos passos e cachoeiras e serras para explorar nos arredores.
+      </Fragment>
+    </SectionHeading>
+
+    <div class="location__grid">
+      <div class="location__info">
+        <address class="location__address" data-reveal>
+          <Icon name="pin" size={22} />
+          <span>
+            <strong>Luar de Minas Suítes</strong>
+            {addressLines.map((line) => <span>{line}</span>)}
+          </span>
+        </address>
+
+        {
+          locationScore && (
+            <p class="location__score" data-reveal>
+              <span class="location__score-value">{formatScore(locationScore.score)}</span>
+              <span>
+                Nota para a localização
+                <small>nas avaliações de hóspedes</small>
+              </span>
+            </p>
+          )
+        }
+
+        <div class="location__actions" data-reveal>
+          <a class="btn" href={mapLinks.directions} target="_blank" rel="noopener">
+            <Icon name="route" /> Como chegar <span class="sr-only">(abre o Google Maps em nova aba)</span>
+          </a>
+          <a class="btn btn--ghost" href={mapLinks.view} target="_blank" rel="noopener">
+            Abrir no Google Maps <Icon name="external" /><span class="sr-only">(abre em nova aba)</span>
+          </a>
+        </div>
+
+        <h3 class="location__subtitle" data-reveal>Nos arredores</h3>
+        <ul class="nearby">
+          {
+            nearby.map((place, i) => (
+              <li data-reveal style={`--reveal-delay:${i * 50}`}>
+                <span class="nearby__icon">
+                  <Icon name={place.icon} size={20} />
+                </span>
+                <span class="nearby__name">
+                  {place.name}
+                  <small>{place.kind}</small>
+                </span>
+                <span class="nearby__distance">≈ {place.distance}</span>
+              </li>
+            ))
+          }
+        </ul>
+
+        {
+          ouroPreto.length > 0 && (
+            <>
+              <h3 class="location__subtitle">Em Ouro Preto</h3>
+              <ul class="nearby nearby--compact">
+                {ouroPreto.map((place) => (
+                  <li>
+                    <span class="nearby__name">{place.name}</span>
+                    <span class="nearby__distance">≈ {place.distance}</span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )
+        }
+
+        <p class="note location__note">
+          Distâncias aproximadas, apenas para referência — não representam o percurso exato a pé ou de carro.
+        </p>
+      </div>
+
+      <div class="map" data-map data-reveal>
+        <div class="map__facade" data-map-facade>
+          <svg class="map__art" viewBox="0 0 600 640" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+            <g fill="none" stroke="currentColor" stroke-width="1" opacity=".35">
+              <path d="M-20 520c80-40 120-120 210-130s140 60 230 30 120-110 210-120"></path>
+              <path d="M-20 470c90-30 130-110 220-120s150 50 240 20 120-100 190-110"></path>
+              <path d="M-20 420c100-20 140-100 230-110s160 40 250 10 110-90 170-100"></path>
+              <path d="M-20 360c110-10 150-90 240-100s170 30 260 0 100-80 150-90"></path>
+              <path d="M-20 300c120 0 160-80 250-90s180 20 270-10 90-70 130-80"></path>
+              <path d="M-20 600c70-50 110-130 200-140s130 70 220 40 130-120 230-130"></path>
+            </g>
+            <path d="M40 640C120 520 200 470 300 330S470 140 560 -10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-dasharray="2 9" stroke-linecap="round" opacity=".55"></path>
+          </svg>
+          <span class="map__pin" aria-hidden="true"><Icon name="moon" size={22} /></span>
+          <div class="map__panel">
+            <p class="map__title">Mapa interativo</p>
+            <p class="map__text">O mapa é carregado do Google Maps somente quando você solicitar.</p>
+            <button class="btn btn--sm" type="button" data-map-load>
+              <Icon name="pin" /> Carregar mapa
+            </button>
+          </div>
+        </div>
+        <template data-map-template>
+          <iframe
+            title="Mapa com a localização do Luar de Minas Suítes em Lavras Novas"
+            src={mapLinks.embed}
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen></iframe>
+        </template>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .location {
+    background: var(--beige);
+  }
+
+  .location__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: clamp(2.5rem, 1.5rem + 4vw, 6rem);
+    align-items: start;
+  }
+
+  .location__address {
+    display: flex;
+    gap: 0.9rem;
+    font-style: normal;
+  }
+
+  .location__address :global(.icon) {
+    flex: none;
+    margin-top: 0.2rem;
+    color: var(--earth);
+  }
+
+  .location__address > span {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .location__address strong {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 400;
+    color: var(--forest);
+  }
+
+  .location__score {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin-top: 1.75rem;
+    padding: 0.7rem 1.2rem 0.7rem 0.7rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--warm-white);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .location__score small {
+    display: block;
+    font-weight: 500;
+    color: var(--ink-soft);
+  }
+
+  .location__score-value {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--forest);
+    color: var(--warm-white);
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+  }
+
+  .location__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .location__subtitle {
+    margin-top: 3rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+    color: var(--forest);
+  }
+
+  .nearby li {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    padding-block: 0.95rem;
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  .nearby--compact li {
+    grid-template-columns: 1fr auto;
+  }
+
+  .nearby__icon {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: var(--warm-white);
+    color: var(--earth);
+  }
+
+  .nearby__name {
+    display: grid;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    line-height: 1.35;
+  }
+
+  .nearby__name small {
+    font-weight: 500;
+    font-size: 0.8125rem;
+    color: var(--ink-soft);
+  }
+
+  .nearby__distance {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--forest);
+    white-space: nowrap;
+  }
+
+  .location__note {
+    margin-top: 1rem;
+  }
+
+  .map {
+    position: sticky;
+    top: calc(var(--header-h) + 1.5rem);
+    aspect-ratio: 5 / 6;
+    max-height: 720px;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--forest);
+    box-shadow: var(--shadow-soft);
+  }
+
+  .map :global(iframe) {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .map__facade {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: end start;
+    padding: clamp(1rem, 3vw, 2rem);
+    color: var(--gold-light);
+  }
+
+  .map__art {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .map__pin {
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: var(--gold);
+    color: var(--forest-night);
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 10px rgb(183 154 105 / 0.2), 0 0 0 22px rgb(183 154 105 / 0.08);
+  }
+
+  .map__pin :global(path) {
+    fill: currentColor;
+  }
+
+  .map__panel {
+    position: relative;
+    display: grid;
+    gap: 0.5rem;
+    max-width: 22rem;
+    padding: 1.4rem 1.5rem;
+    border-radius: var(--radius);
+    background: var(--warm-white);
+    color: var(--ink);
+    box-shadow: var(--shadow-lift);
+  }
+
+  .map__panel .btn {
+    justify-self: start;
+    margin-top: 0.5rem;
+  }
+
+  .map__title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--forest);
+  }
+
+  .map__text {
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 960px) {
+    .location__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .map {
+      position: relative;
+      top: auto;
+      aspect-ratio: 4 / 5;
+      max-height: 560px;
+    }
+
+    .map__pin {
+      top: 30%;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-map]').forEach((map) => {
+    const button = map.querySelector<HTMLButtonElement>('[data-map-load]');
+    const template = map.querySelector<HTMLTemplateElement>('[data-map-template]');
+    const facade = map.querySelector<HTMLElement>('[data-map-facade]');
+    button?.addEventListener('click', () => {
+      if (!template || !facade) return;
+      const iframe = template.content.firstElementChild!.cloneNode(true) as HTMLIFrameElement;
+      facade.replaceWith(iframe);
+      iframe.focus();
+    });
+  });
+</script>
