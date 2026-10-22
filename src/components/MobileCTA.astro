@@ -1,0 +1,88 @@
+---
+/**
+ * Barra fixa de reserva em telas pequenas — aparece depois da primeira dobra
+ * e some quando o formulário de reservas está visível.
+ */
+import Icon from './Icon.astro';
+import { site, whatsappLink } from '../config/site';
+
+const whatsapp = whatsappLink(`Olá! Gostaria de informações sobre o ${site.name}.`);
+---
+
+<div class="mobile-cta" data-mobile-cta aria-hidden="true">
+  <a class="btn btn--gold mobile-cta__main" href="#reservas" tabindex="-1">
+    <Icon name="calendar" size={18} /> Consultar disponibilidade
+  </a>
+  {
+    whatsapp && (
+      <a class="mobile-cta__wa" href={whatsapp} target="_blank" rel="noopener" tabindex="-1" aria-label="WhatsApp (abre em nova aba)">
+        <Icon name="whatsapp" size={22} />
+      </a>
+    )
+  }
+</div>
+
+<style>
+  .mobile-cta {
+    display: none;
+  }
+
+  @media (max-width: 1080px) {
+    .mobile-cta {
+      position: fixed;
+      inset: auto 0 0;
+      z-index: 40;
+      display: flex;
+      gap: 0.6rem;
+      padding: 0.75rem var(--gutter) max(0.75rem, env(safe-area-inset-bottom));
+      background: rgb(252 250 246 / 0.94);
+      border-top: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+      transform: translateY(110%);
+      transition: transform 0.45s var(--ease);
+    }
+
+    .mobile-cta.is-visible {
+      transform: none;
+    }
+  }
+
+  .mobile-cta__main {
+    flex: 1;
+  }
+
+  .mobile-cta__wa {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 3.1rem;
+    height: 3.1rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 50%;
+    color: var(--forest);
+  }
+</style>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-mobile-cta]');
+  const hero = document.querySelector('#inicio');
+  const booking = document.querySelector('#reservas');
+
+  if (bar && hero && booking) {
+    const state = { pastHero: false, onBooking: false };
+    const update = () => {
+      const visible = state.pastHero && !state.onBooking;
+      bar.classList.toggle('is-visible', visible);
+      bar.setAttribute('aria-hidden', String(!visible));
+      bar.querySelectorAll('a').forEach((a) => (a.tabIndex = visible ? 0 : -1));
+    };
+    new IntersectionObserver(([entry]) => {
+      state.pastHero = !entry.isIntersecting;
+      update();
+    }).observe(hero);
+    new IntersectionObserver(([entry]) => {
+      state.onBooking = entry.isIntersecting;
+      update();
+    }).observe(booking);
+  }
+</script>

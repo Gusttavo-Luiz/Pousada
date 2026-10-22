@@ -1,0 +1,252 @@
+---
+import Icon from './Icon.astro';
+import Landscape from './Landscape.astro';
+import { Picture } from 'astro:assets';
+import { getPhoto } from '../lib/photos';
+import { featuredPhotos } from '../content/photos';
+
+const heroPhoto = getPhoto(featuredPhotos.hero.file);
+---
+
+<section class="hero on-dark" id="inicio" aria-labelledby="hero-title">
+  <div class="hero__media" data-parallax>
+    {
+      heroPhoto ? (
+        <Picture
+          src={heroPhoto}
+          alt={featuredPhotos.hero.alt}
+          widths={[640, 960, 1440, 1920, 2560].filter((w) => w <= heroPhoto.width)}
+          sizes="100vw"
+          formats={['avif', 'webp']}
+          loading="eager"
+          fetchpriority="high"
+          class="hero__photo"
+        />
+      ) : (
+        <Landscape tone="night" />
+      )
+    }
+    <div class:list={['hero__shade', { 'hero__shade--photo': heroPhoto }]}></div>
+  </div>
+
+  <div class="hero__content container">
+    <p class="eyebrow hero__eyebrow" data-reveal>Seu refúgio em Lavras Novas</p>
+    <h1 class="hero__title" id="hero-title" data-reveal style="--reveal-delay:120">
+      Desacelere.<br /> Respire.<br /> <em>Viva Minas.</em>
+    </h1>
+    <p class="hero__text" data-reveal style="--reveal-delay:240">
+      Um lugar para aproveitar o silêncio das montanhas, compartilhar bons momentos e transformar sua estadia em
+      uma lembrança especial.
+    </p>
+    <div class="hero__actions" data-reveal style="--reveal-delay:360">
+      <a class="btn btn--gold" href="#acomodacoes">
+        Conheça nossas suítes <Icon name="arrowRight" class="icon--move" />
+      </a>
+      <a class="btn btn--ghost-light" href="#reservas">Planeje sua estadia</a>
+    </div>
+  </div>
+
+  <div class="hero__footer container">
+    <p class="hero__place">
+      <Icon name="pin" size={16} />
+      Lavras Novas · Minas Gerais
+    </p>
+    <a class="hero__scroll" href="#sobre">
+      <span>Role para descobrir</span>
+      <span class="hero__scroll-line" aria-hidden="true"></span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    min-height: 100svh;
+    min-height: max(640px, 100svh);
+    max-height: 1100px;
+    overflow: hidden;
+    isolation: isolate;
+    color: var(--warm-white);
+    background: var(--forest-night);
+  }
+
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .hero__media :global(.landscape),
+  .hero__media :global(.hero__photo),
+  .hero__media :global(picture) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero__shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgb(16 27 22 / 0.35), transparent 65%);
+  }
+
+  .hero__shade--photo {
+    background:
+      linear-gradient(180deg, rgb(16 27 22 / 0.35), transparent 30%, transparent 55%, rgb(16 27 22 / 0.55)),
+      linear-gradient(90deg, rgb(16 27 22 / 0.45), transparent 70%);
+  }
+
+  .hero__content {
+    align-self: center;
+    padding-top: calc(var(--header-h) + 2.5rem);
+    padding-bottom: 3rem;
+  }
+
+  .hero__title {
+    margin-top: 1.5rem;
+    font-size: var(--step-5);
+    font-weight: 400;
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+  }
+
+  .hero__title em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .hero__text {
+    max-width: 34rem;
+    margin-top: 1.75rem;
+    font-size: var(--step-1);
+    line-height: 1.6;
+    color: var(--on-dark-soft);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: 2.5rem;
+  }
+
+  .hero__footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: clamp(1.25rem, 3vw, 2.25rem);
+  }
+
+  .hero__place {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.5rem 0.95rem;
+    border: 1px solid rgb(252 250 246 / 0.25);
+    border-radius: 999px;
+    background: rgb(16 27 22 / 0.25);
+    backdrop-filter: blur(8px);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .hero__place :global(.icon) {
+    color: var(--gold-light);
+  }
+
+  .hero__scroll {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--on-dark-soft);
+  }
+
+  .hero__scroll span:first-child {
+    writing-mode: vertical-rl;
+  }
+
+  .hero__scroll-line {
+    position: relative;
+    width: 1px;
+    height: 52px;
+    overflow: hidden;
+    background: rgb(252 250 246 / 0.25);
+  }
+
+  .hero__scroll-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold-light);
+    transform: translateY(-100%);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__scroll-line::after {
+      animation: scroll-cue 2.4s var(--ease) infinite;
+    }
+  }
+
+  @keyframes scroll-cue {
+    60%,
+    100% {
+      transform: translateY(100%);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero__actions .btn {
+      flex: 1 1 100%;
+    }
+
+    .hero__scroll span:first-child {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Paralaxe discreta das camadas da ilustração (ou da foto) ao rolar.
+  const media = document.querySelector<HTMLElement>('[data-parallax]');
+  const motionOk = window.matchMedia('(prefers-reduced-motion: no-preference)');
+
+  if (media && motionOk.matches) {
+    const layers = [...media.querySelectorAll<SVGGElement>('[data-depth]')];
+    const photo = media.querySelector<HTMLElement>('picture, .hero__photo');
+    let ticking = false;
+
+    const render = () => {
+      const y = Math.min(window.scrollY, window.innerHeight * 1.2);
+      layers.forEach((layer) => {
+        layer.style.transform = `translate3d(0, ${y * Number(layer.dataset.depth)}px, 0)`;
+      });
+      if (photo) photo.style.transform = `translate3d(0, ${y * 0.18}px, 0) scale(1.06)`;
+      ticking = false;
+    };
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking && window.scrollY < window.innerHeight * 1.3) {
+          ticking = true;
+          requestAnimationFrame(render);
+        }
+      },
+      { passive: true },
+    );
+    render();
+  }
+</script>
