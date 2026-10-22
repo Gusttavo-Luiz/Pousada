@@ -4,6 +4,15 @@ O site foi construído **sem inventar informações**. Os itens abaixo precisam
 ser confirmados pela equipe do Luar de Minas Suítes; até lá, o site oculta o
 recurso ou orienta o visitante a consultar a equipe.
 
+## Para a demonstração ao cliente
+
+Nada é obrigatório: a demonstração (GitHub Pages) já mostra todas as seções,
+as acomodações citadas, molduras ilustradas no lugar das fotos e o formulário
+validando sem enviar dados. Só falta ativar o Pages uma vez em
+**Settings → Pages → Source: GitHub Actions** e rodar o workflow
+"Demonstração no GitHub Pages". Fotos reais, se houver, deixam a
+apresentação bem mais forte.
+
 ## Essencial antes de publicar
 
 - [ ] **Canal oficial de reservas/atendimento** — `src/config/site.ts`:

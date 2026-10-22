@@ -26,7 +26,7 @@ Node.js **22.12+**.
 | Comando | Ação |
 | --- | --- |
 | `npm install` | Instala as dependências |
-| `npm run dev` | Desenvolvimento em `http://localhost:4321` (mostra conteúdo pendente e nomes das fotos) |
+| `npm run dev` | Desenvolvimento em `http://localhost:4321` (mostra conteúdo pendente, selos "a confirmar" e nomes dos arquivos de fotos) |
 | `npm run build` | Verifica tipos e gera o site em `dist/` |
 | `npm run preview` | Serve o build localmente |
 | `npm test` | Build + testes Playwright (desktop, tablet e celular) |
@@ -35,8 +35,10 @@ Para os testes: `npx playwright install chromium` (uma vez), ou aponte
 `PW_CHROMIUM_PATH` para um Chromium já instalado.
 
 Variáveis opcionais de build (veja `.env.example`):
-`PUBLIC_SHOW_PENDING=true` mostra o conteúdo ainda não confirmado;
+`PUBLIC_SHOW_PENDING=true` mostra as acomodações ainda não confirmadas;
 `PUBLIC_DEMO_MODE=true` gera a demonstração (sem envio e sem indexação).
+Selos técnicos e nomes de arquivos aparecem só em `npm run dev`, nunca na
+versão mostrada ao cliente.
 
 ## Onde editar o conteúdo
 

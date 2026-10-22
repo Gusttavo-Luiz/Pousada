@@ -2,6 +2,7 @@
 import Icon from './Icon.astro';
 import Photo from './Photo.astro';
 import type { Room } from '../content/rooms';
+import { devHints } from '../config/flags';
 
 interface Props {
   room: Room;
@@ -10,7 +11,7 @@ interface Props {
 
 const { room, index } = Astro.props;
 const [cover, ...more] = room.photos;
-const pending = room.status !== 'confirmado';
+const pending = devHints && room.status !== 'confirmado';
 const group = `quarto-${room.id}`;
 ---
 

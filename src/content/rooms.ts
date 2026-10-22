@@ -34,7 +34,7 @@ export const rooms: Room[] = [
     beds: null,
     capacity: null,
     amenities: [...roomBaseAmenities],
-    photos: [{ file: 'suite-1-quarto-01.jpg', alt: 'Suíte de 1 Quarto', label: 'Suíte de 1 Quarto' }],
+    photos: [{ file: 'suite-1-quarto-01.jpg', alt: 'Suíte de 1 Quarto', label: 'Suíte de 1 Quarto', scene: 'bed' }],
   },
   {
     id: 'suite-superior',
@@ -44,7 +44,7 @@ export const rooms: Room[] = [
     beds: null,
     capacity: null,
     amenities: [...roomBaseAmenities],
-    photos: [{ file: 'suite-superior-01.jpg', alt: 'Suíte Superior', label: 'Suíte Superior' }],
+    photos: [{ file: 'suite-superior-01.jpg', alt: 'Suíte Superior', label: 'Suíte Superior', scene: 'bed' }],
   },
   {
     id: 'suite-deluxe-hidromassagem',
@@ -55,7 +55,7 @@ export const rooms: Room[] = [
     capacity: null,
     amenities: ['Banheira de hidromassagem', ...roomBaseAmenities],
     photos: [
-      { file: 'suite-deluxe-01.jpg', alt: 'Suíte Deluxe com Banheira de Hidromassagem', label: 'Suíte Deluxe' },
+      { file: 'suite-deluxe-01.jpg', alt: 'Suíte Deluxe com Banheira de Hidromassagem', label: 'Suíte Deluxe', scene: 'bath' },
     ],
   },
   {
@@ -66,6 +66,6 @@ export const rooms: Room[] = [
     beds: null,
     capacity: null,
     amenities: [...roomBaseAmenities],
-    photos: [{ file: 'estudio-standard-01.jpg', alt: 'Estúdio Standard', label: 'Estúdio Standard' }],
+    photos: [{ file: 'estudio-standard-01.jpg', alt: 'Estúdio Standard', label: 'Estúdio Standard', scene: 'armchair' }],
   },
 ];
